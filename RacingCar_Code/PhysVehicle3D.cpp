@@ -41,7 +41,7 @@ void PhysVehicle3D::Render()
 	btQuaternion q = vehicle->getChassisWorldTransform().getRotation();
 
 	Cube chassis(info.chassis_size.x, info.chassis_size.y, info.chassis_size.z);
-	chassis.color = DarkGreen;
+	chassis.color = Yellow;
 	vehicle->getChassisWorldTransform().getOpenGLMatrix(&chassis.transform);
 	btVector3 offset(info.chassis_offset.x, info.chassis_offset.y, info.chassis_offset.z);
 	offset = offset.rotate(q.getAxis(), q.getAngle());
@@ -62,7 +62,7 @@ void PhysVehicle3D::Render()
 	cabin.transform.M[14] += cabin_offset.getZ();
 
 	Cube tube(info.tube_size.x, info.tube_size.y, info.tube_size.z);
-	tube.color = DarkGreen;
+	tube.color = Yellow;
 	vehicle->getChassisWorldTransform().getOpenGLMatrix(&tube.transform);
 	btVector3 tube_offset(info.tube_offset.x, info.tube_offset.y, info.tube_offset.z);
 	tube_offset = tube_offset.rotate(q.getAxis(), q.getAngle());
@@ -82,7 +82,7 @@ void PhysVehicle3D::Render()
 	tubeThin.transform.M[14] += tubeThin_offset.getZ();
 
 	Cube hat(info.hat_size.x, info.hat_size.y, info.hat_size.z);
-	hat.color = Red;
+	hat.color = Yellow;
 	vehicle->getChassisWorldTransform().getOpenGLMatrix(&hat.transform);
 	btVector3 hat_offset(info.hat_offset.x, info.hat_offset.y, info.hat_offset.z);
 	hat_offset = hat_offset.rotate(q.getAxis(), q.getAngle());
@@ -92,7 +92,7 @@ void PhysVehicle3D::Render()
 	hat.transform.M[14] += hat_offset.getZ();
 
 	Cube motor(info.motor_size.x, info.motor_size.y, info.motor_size.z);
-	motor.color = DarkGreen;
+	motor.color = Yellow;
 	vehicle->getChassisWorldTransform().getOpenGLMatrix(&motor.transform);
 	btVector3 motor_offset(info.motor_offset.x, info.motor_offset.y, info.motor_offset.z);
 	motor_offset = motor_offset.rotate(q.getAxis(), q.getAngle());

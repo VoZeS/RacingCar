@@ -6,6 +6,8 @@
 
 #define MAX_SNAKE 2
 
+#define SKY_LIMITS 200
+
 struct PhysBody3D;
 struct PhysMotor3D;
 
@@ -29,6 +31,13 @@ public:
 	PhysBody3D* pb_snake2[MAX_SNAKE];
 	Sphere s_snake2[MAX_SNAKE];
 	*/
+	Cube* ground;
+
+	Cube* sky1;
+	Cube* sky2;
+	Cube* sky3;
+	Cube* sky4;
+	Cube* sky5;
 
 	PhysBody3D* pb_chassis;
 	Cube p_chassis;
