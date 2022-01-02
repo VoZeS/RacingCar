@@ -193,6 +193,12 @@ update_status ModulePlayer::Update(float dt)
 		cam_follow = false;
 		
 	}
+
+	if (vehicle->GetPos().y < -1)
+	{
+		vehicle->SetPos(0, 0.5, 0);
+	}
+
 	char title[80];
 	sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
 	App->window->SetTitle(title);
