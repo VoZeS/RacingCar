@@ -69,6 +69,16 @@ update_status ModuleSceneIntro::Update(float dt)
 	sky4->Render();
 	sky5->Render();
 
+	if (frames % 60 == 0 && timer > 0)
+	{
+		/*if (App->player->turboTimer > 0)
+		{
+			App->player->turboTimer--;
+		}
+		App->player->turboSoundActive = true;*/
+		timer--;
+	}
+	frames++;
 	return UPDATE_CONTINUE;
 }
 
