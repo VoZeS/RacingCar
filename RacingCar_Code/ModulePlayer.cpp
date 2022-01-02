@@ -129,8 +129,12 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update(float dt)
 {
+	if (INITIAL_TIME - App->scene_intro->timer == 5)
+	{
+		canMove = true;
+	}
 	turn = acceleration = brake = 0.0f;
-
+	
 	//-------------------------------------------------------------------------------------------------------------- FOLLOWING CAMERA
 	if (cam_follow)
 	{
@@ -184,8 +188,13 @@ update_status ModulePlayer::Update(float dt)
 
 	vehicle->Render();
 
+	if (App->scene_intro->timer <= 0)
+	{
+		cam_follow = false;
+		
+	}
 	char title[80];
-	sprintf_s(title, "%.1f Km/h", vehicle->GetKmh());
+	sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
 	App->window->SetTitle(title);
 
 	return UPDATE_CONTINUE;

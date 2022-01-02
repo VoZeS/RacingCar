@@ -5,6 +5,7 @@
 #include "Primitive.h"
 
 #define MAX_SNAKE 2
+#define INITIAL_TIME 60
 
 struct PhysBody3D;
 struct PhysMotor3D;
@@ -41,4 +42,8 @@ public:
 
 	PhysMotor3D* left_wheel;
 	PhysMotor3D* right_wheel;
+
+
+	uint timer = INITIAL_TIME;
+	uint frames = 0;
 };
