@@ -21,8 +21,24 @@ bool ModulePlayer::Start()
 	VehicleInfo car;
 
 	// Car properties ----------------------------------------
-	car.chassis_size.Set(2, 2, 4);
-	car.chassis_offset.Set(0, 1.5, 0);
+	car.chassis_size.Set(2, 0.75f, 4);
+	car.chassis_offset.Set(0, 1, 0);
+
+	car.cabin_size.Set(1, 1.25f, 1.5f);
+	car.cabin_offset.Set(0, 2, -1);
+
+	car.tube_size.Set(0.25f, 0.75f, 0.25f);
+	car.tube_offset.Set(0.75f, 1.75f, -1.5f);
+
+	car.tubeThin_size.Set(0.25f/2, 0.75f, 0.25f/2);
+	car.tubeThin_offset.Set(0.75f, 2.5f, -1.5f);
+
+	car.hat_size.Set(1.25f, 0.1f, 1.75f);
+	car.hat_offset.Set(0, 2.6f, -1);
+
+	car.motor_size.Set(1, 0.75f, 1.75f);
+	car.motor_offset.Set(0, 1.6f, 1);
+
 	car.mass = 500.0f;
 	car.suspensionStiffness = 15.88f;
 	car.suspensionCompression = 0.83f;
@@ -130,7 +146,7 @@ update_status ModulePlayer::Update(float dt)
 
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 	{
 		if (cam_follow)
 			cam_follow = false;
