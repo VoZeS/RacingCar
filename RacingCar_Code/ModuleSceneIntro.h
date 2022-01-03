@@ -5,9 +5,11 @@
 #include "Primitive.h"
 
 #define MAX_SNAKE 2
-#define INITIAL_TIME 60
+#define INITIAL_TIME 120
 
 #define SKY_LIMITS 200
+#define WALL_MASS 0
+#define MAX_WALLS 37
 
 struct PhysBody3D;
 struct PhysMotor3D;
@@ -34,11 +36,9 @@ public:
 	*/
 	Cube* ground;
 
-	Cube* sky1;
-	Cube* sky2;
-	Cube* sky3;
-	Cube* sky4;
-	Cube* sky5;
+	Cube* sky[5];
+
+	Cube* wall[MAX_WALLS];
 
 	PhysBody3D* pb_chassis;
 	Cube p_chassis;

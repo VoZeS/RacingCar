@@ -33,5 +33,6 @@ extern Color LightBlue;
 extern Color Black;
 extern Color Grey;
 extern Color White;
+extern Color PureWhite;
 extern Color Cyan;
 extern Color Yellow;

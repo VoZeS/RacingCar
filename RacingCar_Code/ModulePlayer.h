@@ -6,6 +6,8 @@
 struct PhysVehicle3D;
 
 #define MAX_ACCELERATION 1000.0f
+#define MAX_VEL 100.0f
+#define MIN_VEL -50.0f
 #define TURN_DEGREES 15.0f * DEGTORAD
 #define BRAKE_POWER 100.0f
 
@@ -20,6 +22,8 @@ public:
 	bool CleanUp();
 
 	bool cam_follow = true;
+	bool maxVelAch = false;
+	bool minVelAch = false;
 
 public:
 
@@ -28,4 +32,5 @@ public:
 	float acceleration;
 	float brake;
 	bool canMove;
+	bool backwards = false;
 };

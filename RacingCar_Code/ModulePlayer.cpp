@@ -142,11 +142,24 @@ update_status ModulePlayer::Update(float dt)
 		vec3 p = vehicle->GetPos();
 		vec3 f = vehicle->GetForwardVector();
 
-		vec3 dist_to_car = { -8.0f, 5.0f, -8.0f };
-		vec3 camera_new_position = { p.x + (f.x * dist_to_car.x), p.y + f.y + dist_to_car.y, p.z + (f.z * dist_to_car.z) };
-		vec3 speed_camera = camera_new_position - App->camera->Position;
+		if (backwards)
+		{
+			vec3 dist_to_car = { 8.0f, 4.0f, 10.0f };
+			vec3 camera_new_position = { p.x + (f.x * dist_to_car.x), p.y + f.y + dist_to_car.y, p.z + (f.z * dist_to_car.z) };
+			vec3 speed_camera = camera_new_position - App->camera->Position;
+			App->camera->Look(App->camera->Position + (speed_cam * speed_camera), p);
 
-		App->camera->Look(App->camera->Position + (speed_cam * speed_camera), p);
+		}
+
+		else
+		{
+			vec3 dist_to_car = { -8.0f, 4.0f, -10.0f };
+			vec3 camera_new_position = { p.x + (f.x * dist_to_car.x), p.y + f.y + dist_to_car.y, p.z + (f.z * dist_to_car.z) };
+			vec3 speed_camera = camera_new_position - App->camera->Position;
+			App->camera->Look(App->camera->Position + (speed_cam * speed_camera), p);
+
+		}
+
 
 	}
 
@@ -160,9 +173,36 @@ update_status ModulePlayer::Update(float dt)
 	
 	//---------------------------------- END FOLLOWING CAMERA
 
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	if (vehicle->GetKmh() >= MAX_VEL)
+	{
+		maxVelAch = true;
+	}
+	else
+	{
+		maxVelAch = false;
+
+	}
+
+	if (vehicle->GetKmh() <= MIN_VEL)
+	{
+		minVelAch = true;
+	}
+	else
+	{
+		minVelAch = false;
+
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && vehicle->GetKmh() < 0 && !maxVelAch)
+	{
+		brake = BRAKE_POWER;
+		backwards = false;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && vehicle->GetKmh() >= 0 && !maxVelAch)
 	{
 		acceleration = MAX_ACCELERATION;
+		backwards = false;
+
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
@@ -177,9 +217,16 @@ update_status ModulePlayer::Update(float dt)
 			turn -= TURN_DEGREES;
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() > 0 && !minVelAch)
 	{
 		brake = BRAKE_POWER;
+		backwards = true;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() <= 0 && !minVelAch)
+	{
+		acceleration = - MAX_ACCELERATION;
+		backwards = true;
+
 	}
 
 	vehicle->ApplyEngineForce(acceleration);
