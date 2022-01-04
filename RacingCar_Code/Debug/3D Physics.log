@@ -1,3 +1,5 @@
 ﻿  ModulePlayer.cpp
 C:\Users\shake\Desktop\RacingCar\RacingCar_Code\ModulePlayer.cpp(144,24): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+  ModuleSceneIntro.cpp
+  Generando código...
   3D Physics.vcxproj -> C:\Users\shake\Desktop\RacingCar\RacingCar_Code\Debug\3D Physics - class5.exe

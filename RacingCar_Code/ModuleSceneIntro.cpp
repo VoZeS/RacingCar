@@ -244,6 +244,8 @@ bool ModuleSceneIntro::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
+	App->audio->PlayMusic("Assets/music/music.ogg");
+
 	for (int i = 0; i < MAX_WALLS; i++)
 	{
 		App->physics->AddBody(*wall[i], WALL_MASS);

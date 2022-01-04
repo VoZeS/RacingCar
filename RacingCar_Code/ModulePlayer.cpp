@@ -231,6 +231,8 @@ update_status ModulePlayer::Update(float dt)
 		brake = BRAKE_POWER;
 		backwards = true;
 	}
+	
+
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() <= 0 && !minVelAch)
 	{
 		acceleration = - MAX_ACCELERATION;
