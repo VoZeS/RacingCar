@@ -246,7 +246,7 @@ bool ModuleSceneIntro::Start()
 
 	for (int i = 0; i < MAX_WALLS; i++)
 	{
-		App->physics->AddBody(*wall[i], WALL_MASS);
+		App->physics->AddBody(*wall[i], this, WALL_MASS);
 
 	}
 
