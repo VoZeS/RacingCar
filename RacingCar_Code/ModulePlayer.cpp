@@ -114,6 +114,9 @@ bool ModulePlayer::Start()
 
 	vehicle = App->physics->AddVehicle(car);
 	vehicle->SetPos(0, 0.5f, 0);
+
+	breakFX = App->audio->LoadFx("Assets/FX/break.wav");
+	hornFX = App->audio->LoadFx("Assets/FX/horn.wav");
 	
 	return true;
 }
@@ -204,6 +207,11 @@ update_status ModulePlayer::Update(float dt)
 		backwards = false;
 
 	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		App->audio->PlayFx(hornFX);
+		
+	}
 
 	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
@@ -219,9 +227,12 @@ update_status ModulePlayer::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() > 0 && !minVelAch)
 	{
+		App->audio->PlayFx(breakFX);
 		brake = BRAKE_POWER;
 		backwards = true;
 	}
+	
+
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() <= 0 && !minVelAch)
 	{
 		acceleration = - MAX_ACCELERATION;
