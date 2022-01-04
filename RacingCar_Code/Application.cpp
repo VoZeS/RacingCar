@@ -131,3 +131,5 @@ void Application::AddModule(Module* mod)
 {
 	list_modules.add(mod);
 }
+
+Application* App = nullptr;

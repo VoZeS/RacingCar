@@ -27,6 +27,9 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	void AddBodyToWorld(btRigidBody* body);
+	void RemoveBodyFromWorld(btRigidBody* body);
+
 	PhysBody3D* AddBody(const Sphere& sphere, float mass = 1.0f);
 	PhysBody3D* AddBody(const Cube& cube, Module* listener, float mass = 1.0f, bool sensor = false);
 	PhysBody3D* AddBody(const Cylinder& cylinder, float mass = 1.0f);

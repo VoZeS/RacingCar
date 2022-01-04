@@ -93,8 +93,8 @@ int main(int argc, char ** argv)
 		//TOC
 		auto end = chrono::steady_clock::now();
 		auto telapsed = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-		LOG("Elapsed time in milliseconds: %d", telapsed, " ms");
-		LOG("%.f", dt);
+		/*LOG("Elapsed time in milliseconds: %d", telapsed, " ms");
+		LOG("%.f", dt);*/
 
 		if (dt - telapsed > 0.0f)
 			Sleep(dt - telapsed);

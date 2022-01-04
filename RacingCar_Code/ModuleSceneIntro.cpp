@@ -3,6 +3,8 @@
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 #include "PhysBody3D.h"
+#include "PhysVehicle3D.h"
+#include "ModulePlayer.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -230,6 +232,39 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	wall[36]->SetPos(75, 15, 60);
 	wall[36]->axis = false;
 	wall[36]->color = PureWhite;
+
+	//RAMP 6
+	wall[37] = new Cube(20, 1, 20);
+	wall[37]->SetPos(40, -1, 80);
+	wall[37]->SetRotation(20.0f, { 0, 0, -1 });
+	wall[37]->axis = false;
+	wall[37]->color = Green;
+
+	//RAMP 7
+	wall[38] = new Cube(20, 1, 20);
+	wall[38]->SetPos(40, -1, 60);
+	wall[38]->SetRotation(20.0f, { 0, 0, -1 });
+	wall[38]->axis = false;
+	wall[38]->color = Green;
+
+	//RAMP 8
+	wall[39] = new Cube(20, 1, 20);
+	wall[39]->SetPos(40, -1, 40);
+	wall[39]->SetRotation(20.0f, { 0, 0, -1 });
+	wall[39]->axis = false;
+	wall[39]->color = Green;
+
+	// SENSOR FOR WIN CONDITION
+	sensor = new Cube(1, 15, 40);
+	sensor->SetPos(70, 7, 60);
+
+	ball = new Sphere(2);
+	ball->SetPos(-50, 5, 40);
+	ball->color = Black;
+	ball->radius = 2;
+	ball->axis = false;
+	ball->wire = false;
+
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -241,8 +276,11 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	goalFX = App->audio->LoadFx("Assets/FX/goal.wav");
+
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
+	App->player->cam_follow = true;
 
 	App->audio->PlayMusic("Assets/music/music.ogg");
 
@@ -251,6 +289,10 @@ bool ModuleSceneIntro::Start()
 		App->physics->AddBody(*wall[i], this, WALL_MASS);
 
 	}
+
+	App->physics->AddBody(*sensor, this, 0.0f, true);
+
+	b = App->physics->AddBody(*ball, 0.5f);
 
 	return ret;
 }
@@ -293,7 +335,9 @@ update_status ModuleSceneIntro::Update(float dt)
 		wall[i]->Render();
 	}
 
-	if (frames % 60 == 0 && timer > 0)
+	ball->SetPos(b->GetPos().x, b->GetPos().y, b->GetPos().z);
+
+	if (frames % 60 == 0 && timer > 0 && !is_playing_goal)
 	{
 		/*if (App->player->turboTimer > 0)
 		{
@@ -308,7 +352,28 @@ update_status ModuleSceneIntro::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
+update_status ModuleSceneIntro::PostUpdate(float dt)
 {
+	ball->Render();
+
+	return UPDATE_CONTINUE;
 }
 
+void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
+{
+	vec3 position = vec3(-150.0f, 40.0f, 5.0f);
+	vec3 reference = vec3(0.0f, 0.0f, 0.0f);
+
+	if (body1->is_sensor && body2->is_ball)
+	{
+		App->player->cam_follow = false;
+		App->camera->Look(position, reference);
+		
+		if (!is_playing_goal)
+		{
+			App->audio->PlayFx(goalFX);
+			is_playing_goal = true;
+		}
+
+	}
+}

@@ -20,6 +20,7 @@ bool ModulePlayer::Start()
 
 	VehicleInfo car;
 
+
 	// Car properties ----------------------------------------
 	car.chassis_size.Set(2, 0.75f, 4);
 	car.chassis_offset.Set(0, 1, 0);
@@ -257,8 +258,13 @@ update_status ModulePlayer::Update(float dt)
 		vehicle->SetPos(0, 0.5, 0);
 	}
 
+
 	char title[80];
-	sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
+	if(!App->scene_intro->is_playing_goal)
+		sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
+	else
+		sprintf_s(title, " YOU WIN!! %d s before the countdown reached 0 --- %.1f Km/h", App->scene_intro->timer, vehicle->GetKmh());
+
 	App->window->SetTitle(title);
 
 	return UPDATE_CONTINUE;
