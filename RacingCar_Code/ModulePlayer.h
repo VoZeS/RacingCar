@@ -33,4 +33,10 @@ public:
 	float brake;
 	bool canMove;
 	bool backwards = false;
+
+	//FX
+	uint breakFX;
+	uint hornFX;
+	uint engineOnFX;
+
 };
