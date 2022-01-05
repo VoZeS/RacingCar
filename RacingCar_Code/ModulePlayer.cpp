@@ -299,6 +299,15 @@ update_status ModulePlayer::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) Restart();
 
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN) 
+	{
+		float x = 0, y = 0, z = 0;
+		x = vehicle->GetPos().x;
+		z = vehicle->GetPos().z;
+		vehicle->SetPos(x, 0.5f, z);
+	}
+	
+
 	char title[80];
 	if(!App->scene_intro->is_playing_goal)
 		sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
@@ -315,6 +324,7 @@ void ModulePlayer::Restart()
 	turn = 0;
 	acceleration = 0;
 	vehicle->SetPos(0, 0.5f, 0);
+	cam_follow = true;
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
 	vehicle->SetRotation(q);
