@@ -27,18 +27,13 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-	void AddBodyToWorld(btRigidBody* body);
-	void RemoveBodyFromWorld(btRigidBody* body);
-
 	PhysBody3D* AddBody(const Sphere& sphere, float mass = 1.0f);
 	PhysBody3D* AddBody(const Cube& cube, Module* listener, float mass = 1.0f, bool sensor = false);
 	PhysBody3D* AddBody(const Cylinder& cylinder, float mass = 1.0f);
 	PhysVehicle3D* AddVehicle(const VehicleInfo& info);
 
 	void AddConstraintP2P(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB);
-	void AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision = false);
-
-	btHingeConstraint* hinge;
+	btHingeConstraint* AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision = false);
 
 private:
 

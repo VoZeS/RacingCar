@@ -24,6 +24,7 @@ public:
 	void Restart();
 
 	bool cam_follow = true;
+	bool looser = false;
 	bool maxVelAch = false;
 	bool minVelAch = false;
 

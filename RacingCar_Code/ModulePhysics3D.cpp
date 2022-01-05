@@ -287,12 +287,12 @@ PhysVehicle3D* ModulePhysics3D::AddVehicle(const VehicleInfo& info)
 	btCompoundShape* comShape = new btCompoundShape();
 	shapes.add(comShape);
 
-	btCollisionShape* colShape = new btBoxShape(btVector3(info.chassis_size.x*0.5f, info.chassis_size.y*0.5f, info.chassis_size.z*0.5f));
+	btCollisionShape* colShape = new btBoxShape(btVector3(info.chassis_size.x*0.5f, (info.chassis_size.y + info.cabin_size.y)*0.5f, info.chassis_size.z*0.5f));
 	shapes.add(colShape);
 
 	btTransform trans;
 	trans.setIdentity();
-	trans.setOrigin(btVector3(info.chassis_offset.x, info.chassis_offset.y, info.chassis_offset.z));
+	trans.setOrigin(btVector3(info.chassis_offset.x, info.chassis_offset.y + 0.625f, info.chassis_offset.z));
 
 	comShape->addChildShape(trans, colShape);
 
@@ -353,9 +353,9 @@ void ModulePhysics3D::AddConstraintP2P(PhysBody3D& bodyA, PhysBody3D& bodyB, con
 	p2p->setDbgDrawSize(2.0f);
 }
 
-void ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision)
+btHingeConstraint* ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision)
 {
-	hinge = new btHingeConstraint(
+	btHingeConstraint* hinge = new btHingeConstraint(
 		*(bodyA.body), 
 		*(bodyB.body), 
 		btVector3(anchorA.x, anchorA.y, anchorA.z),
@@ -367,6 +367,8 @@ void ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, c
 	constraints.add(hinge);
 	hinge->setDbgDrawSize(2.0f);
 	hinge->enableAngularMotor(true, -5, 100);
+
+	return hinge;
 }
 
 // =============================================

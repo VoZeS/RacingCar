@@ -1,3 +1,6 @@
 ﻿  ModulePlayer.cpp
-C:\Users\shake\Desktop\RacingCar\RacingCar_Code\ModulePlayer.cpp(147,24): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-  3D Physics.vcxproj -> C:\Users\shake\Desktop\RacingCar\RacingCar_Code\Debug\3D Physics - class5.exe
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\Bullet3D\RacingCar\RacingCar_Code\ModulePlayer.cpp(154,24): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+  ModuleSceneIntro.cpp
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\Bullet3D\RacingCar\RacingCar_Code\ModuleSceneIntro.cpp(415,68): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+  Generando código...
+  3D Physics.vcxproj -> C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\Bullet3D\RacingCar\RacingCar_Code\Debug\3D Physics - class5.exe

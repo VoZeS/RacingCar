@@ -259,7 +259,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	sensor->SetPos(70, 7, 60);
 
 	ball = new Sphere(2);
-	ball->SetPos(-50, 5, 60);
+	ball->SetPos(-50, 2, 60);
 	ball->color = Black;
 	ball->radius = 2;
 	ball->axis = false;
@@ -335,13 +335,15 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	goalFX = App->audio->LoadFx("Assets/FX/goal.wav");
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 	App->player->cam_follow = true;
 
 	App->audio->PlayMusic("Assets/music/music.ogg");
+
+	goalFX = App->audio->LoadFx("Assets/FX/goal.wav");
+	looseFX = App->audio->LoadFx("Assets/FX/loose.wav");
 
 	for (int i = 0; i < MAX_WALLS; i++)
 	{
@@ -359,7 +361,7 @@ bool ModuleSceneIntro::Start()
 		constFix[k]->is_ball = false;
 		constMobile[k] = App->physics->AddBody(*cubeConstMobile[k], this, 100.0f, false);
 		constMobile[k]->is_ball = false;
-		App->physics->AddConstraintHinge(*constFix[k], *constMobile[k], { 0,0,0 }, { 0,3,0 }, { 1,0,0 }, { 1,0,0 });
+		hinge[k] = App->physics->AddConstraintHinge(*constFix[k], *constMobile[k], { 0,0,0 }, { 0,3,0 }, { 1,0,0 }, { 1,0,0 });
 
 	}
 
@@ -410,10 +412,15 @@ update_status ModuleSceneIntro::Update(float dt)
 	{
 		cubeConstFix[k]->SetPos(constFix[k]->GetPos().x, constFix[k]->GetPos().y, constFix[k]->GetPos().z);
 		cubeConstMobile[k]->SetPos(constMobile[k]->GetPos().x, constMobile[k]->GetPos().y, constMobile[k]->GetPos().z);
-		cubeConstMobile[k]->SetRotation((App->physics->hinge->getHingeAngle() * 180 / M_PI), { 0,0,1 });
+		cubeConstMobile[k]->SetRotation((hinge[k]->getHingeAngle() * 180 / M_PI), { 0,0,1 });
 
 	}
 
+	if (b->GetPos().x < -95 || b->GetPos().x > 95 || b->GetPos().z < 20 || b->GetPos().z > 95)
+	{
+		b->SetPos(-50, 5, 60);
+
+	}
 
 	if (frames % 60 == 0 && timer > 0 && !is_playing_goal)
 	{
@@ -449,7 +456,7 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	vec3 position = vec3(-150.0f, 40.0f, 5.0f);
 	vec3 reference = vec3(0.0f, 0.0f, 0.0f);
 
-	if (body1->is_sensor && body2->is_ball)
+	if (body1->is_sensor && body2->is_ball && !App->player->looser)
 	{
 		App->player->cam_follow = false;
 		App->camera->Look(position, reference);

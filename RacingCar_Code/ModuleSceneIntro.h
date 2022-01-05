@@ -3,6 +3,10 @@
 #include "p2DynArray.h"
 #include "Globals.h"
 #include "Primitive.h"
+#include "p2List.h"
+#include "Primitive.h"
+
+#include "Bullet/include/btBulletDynamicsCommon.h"
 
 #define MAX_SNAKE 2
 #define INITIAL_TIME 120
@@ -46,12 +50,16 @@ public:
 	Cube* cubeConstMobile[MAX_GOALKEEPERS];
 	PhysBody3D* constFix[MAX_GOALKEEPERS];
 	PhysBody3D* constMobile[MAX_GOALKEEPERS];
+	btHingeConstraint* hinge[MAX_GOALKEEPERS];
 
 
 	Cube* sensor;
 
 	uint goalFX;
 	bool is_playing_goal = false;
+
+	uint looseFX;
+	bool is_playing_looser = false;
 
 	Sphere* ball;
 

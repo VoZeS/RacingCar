@@ -8,6 +8,8 @@
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled), vehicle(NULL)
 {
 	turn = acceleration = brake = 0.0f;
+
+	looser = false;
 }
 
 ModulePlayer::~ModulePlayer()
@@ -141,6 +143,11 @@ update_status ModulePlayer::Update(float dt)
 	}
 	turn = acceleration = brake = 0.0f;
 
+	// PLAYER LIMITS
+	if (vehicle->GetPos().x < -95 || vehicle->GetPos().x > 95 || vehicle->GetPos().z < -95 || vehicle->GetPos().z > 95)
+	{
+		Restart();
+	}
 	//-------------------------------------------------------------------------------------------------------------- FOLLOWING CAMERA
 	if (cam_follow)
 	{
@@ -232,7 +239,6 @@ update_status ModulePlayer::Update(float dt)
 	{
 		//App->audio->PlayFx(breakFX);
 		brake = BRAKE_POWER;
-		backwards = true;
 	}
 	
 
@@ -251,8 +257,7 @@ update_status ModulePlayer::Update(float dt)
 
 	if (App->scene_intro->timer <= 0)
 	{
-		cam_follow = false;
-		
+		looser = true;
 	}
 
 	if (vehicle->GetPos().y < -1)
@@ -312,10 +317,37 @@ update_status ModulePlayer::Update(float dt)
 	
 
 	char title[80];
-	if(!App->scene_intro->is_playing_goal)
+	if (!App->scene_intro->is_playing_goal && !looser)
+	{
 		sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
+
+	}
+	else if (App->scene_intro->is_playing_goal && !looser)
+	{
+		sprintf_s(title, " YOU WIN!! --- PRESS 'R' TO RESTART --- %.1f Km/h", vehicle->GetKmh());
+
+	}
+	else if (!App->scene_intro->is_playing_goal && looser)
+	{
+		vec3 position = vec3(-150.0f, 40.0f, 5.0f);
+		vec3 reference = vec3(0.0f, 0.0f, 0.0f);
+
+		cam_follow = false;
+		App->camera->Look(position, reference);
+
+		if (!App->scene_intro->is_playing_looser)
+		{
+			App->audio->PlayFx(App->scene_intro->looseFX);
+			App->scene_intro->is_playing_looser = true;
+		}
+
+		sprintf_s(title, " YOU LOOSE :( --- PRESS 'R' TO RESTART --- %.1f Km/h", vehicle->GetKmh());
+	}
 	else
-		sprintf_s(title, " YOU WIN!! %d s before the countdown reached 0 --- %.1f Km/h", App->scene_intro->timer, vehicle->GetKmh());
+	{
+		sprintf_s(title, "PLEASE PRESS 'R' TO RESTART --- %.1f Km/h", vehicle->GetKmh());
+
+	}
 
 	App->window->SetTitle(title);
 
@@ -327,7 +359,11 @@ void ModulePlayer::Restart()
 	turn = 0;
 	acceleration = 0;
 	vehicle->SetPos(0, 0.5f, 0);
+	App->scene_intro->b->SetPos(-50, 2, 60);
+	looser = false;
 	cam_follow = true;
+	App->scene_intro->is_playing_goal = false;
+	App->scene_intro->is_playing_looser = false;
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
 	vehicle->SetRotation(q);
