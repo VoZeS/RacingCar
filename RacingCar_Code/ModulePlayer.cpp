@@ -299,12 +299,15 @@ update_status ModulePlayer::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) Restart();
 
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) 
 	{
 		float x = 0, y = 0, z = 0;
 		x = vehicle->GetPos().x;
 		z = vehicle->GetPos().z;
 		vehicle->SetPos(x, 0.5f, z);
+		btQuaternion q;
+		q.setEuler(btScalar(vehicle->GetForwardVector().x * DEGTORAD), btScalar(0), btScalar(0));
+		vehicle->SetRotation(q);
 	}
 	
 
