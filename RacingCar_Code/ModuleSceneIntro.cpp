@@ -259,12 +259,71 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	sensor->SetPos(70, 7, 60);
 
 	ball = new Sphere(2);
-	ball->SetPos(-50, 5, 40);
+	ball->SetPos(-50, 5, 60);
 	ball->color = Black;
 	ball->radius = 2;
 	ball->axis = false;
 	ball->wire = false;
 
+	cubeConstFix[0] = new Cube(2, 1, 1);
+	cubeConstFix[0]->SetPos(70, 6, 70);
+	cubeConstFix[0]->SetRotation(90, { 0,1,0 });
+	cubeConstFix[0]->axis = false;
+	cubeConstFix[0]->color = PureWhite;
+
+	cubeConstMobile[0] = new Cube(2, 3, 2);
+	cubeConstMobile[0]->SetPos(70, 3, 70);
+	cubeConstMobile[0]->SetRotation(90, { 0,0,1 });
+	cubeConstMobile[0]->axis = false;
+	cubeConstMobile[0]->color = Blue;
+
+	cubeConstFix[1] = new Cube(2, 1, 1);
+	cubeConstFix[1]->SetPos(70, 6, 60);
+	cubeConstFix[1]->SetRotation(90, { 0,1,0 });
+	cubeConstFix[1]->axis = false;
+	cubeConstFix[1]->color = PureWhite;
+
+	cubeConstMobile[1] = new Cube(2, 3, 2);
+	cubeConstMobile[1]->SetPos(70, 3, 60);
+	cubeConstMobile[1]->SetRotation(90, { 0,0,1 });
+	cubeConstMobile[1]->axis = false;
+	cubeConstMobile[1]->color = Blue;
+
+	cubeConstFix[2] = new Cube(2, 1, 1);
+	cubeConstFix[2]->SetPos(70, 6, 50);
+	cubeConstFix[2]->SetRotation(90, { 0,1,0 });
+	cubeConstFix[2]->axis = false;
+	cubeConstFix[2]->color = PureWhite;
+
+	cubeConstMobile[2] = new Cube(2, 3, 2);
+	cubeConstMobile[2]->SetPos(70, 3, 50);
+	cubeConstMobile[2]->SetRotation(90, { 0,0,1 });
+	cubeConstMobile[2]->axis = false;
+	cubeConstMobile[2]->color = Blue;
+
+	cubeConstFix[3] = new Cube(2, 1, 1);
+	cubeConstFix[3]->SetPos(70, 6, 35);
+	cubeConstFix[3]->SetRotation(90, { 0,1,0 });
+	cubeConstFix[3]->axis = false;
+	cubeConstFix[3]->color = PureWhite;
+
+	cubeConstMobile[3] = new Cube(2, 3, 2);
+	cubeConstMobile[3]->SetPos(70, 3, 35);
+	cubeConstMobile[3]->SetRotation(90, { 0,0,1 });
+	cubeConstMobile[3]->axis = false;
+	cubeConstMobile[3]->color = Blue;
+
+	cubeConstFix[4] = new Cube(2, 1, 1);
+	cubeConstFix[4]->SetPos(70, 6, 85);
+	cubeConstFix[4]->SetRotation(90, { 0,1,0 });
+	cubeConstFix[4]->axis = false;
+	cubeConstFix[4]->color = PureWhite;
+
+	cubeConstMobile[4] = new Cube(2, 3, 2);
+	cubeConstMobile[4]->SetPos(70, 3, 85);
+	cubeConstMobile[4]->SetRotation(90, { 0,0,1 });
+	cubeConstMobile[4]->axis = false;
+	cubeConstMobile[4]->color = Blue;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -293,6 +352,16 @@ bool ModuleSceneIntro::Start()
 	App->physics->AddBody(*sensor, this, 0.0f, true);
 
 	b = App->physics->AddBody(*ball, 0.5f);
+
+	for (int k = 0; k < MAX_GOALKEEPERS; k++)
+	{
+		constFix[k] = App->physics->AddBody(*cubeConstFix[k], this, 0.0f, false);
+		constFix[k]->is_ball = false;
+		constMobile[k] = App->physics->AddBody(*cubeConstMobile[k], this, 100.0f, false);
+		constMobile[k]->is_ball = false;
+		App->physics->AddConstraintHinge(*constFix[k], *constMobile[k], { 0,0,0 }, { 0,3,0 }, { 1,0,0 }, { 1,0,0 });
+
+	}
 
 	return ret;
 }
@@ -337,6 +406,15 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	ball->SetPos(b->GetPos().x, b->GetPos().y, b->GetPos().z);
 
+	for (int k = 0; k < MAX_GOALKEEPERS; k++)
+	{
+		cubeConstFix[k]->SetPos(constFix[k]->GetPos().x, constFix[k]->GetPos().y, constFix[k]->GetPos().z);
+		cubeConstMobile[k]->SetPos(constMobile[k]->GetPos().x, constMobile[k]->GetPos().y, constMobile[k]->GetPos().z);
+		cubeConstMobile[k]->SetRotation((App->physics->hinge->getHingeAngle() * 180 / M_PI), { 0,0,1 });
+
+	}
+
+
 	if (frames % 60 == 0 && timer > 0 && !is_playing_goal)
 	{
 		/*if (App->player->turboTimer > 0)
@@ -355,6 +433,13 @@ update_status ModuleSceneIntro::Update(float dt)
 update_status ModuleSceneIntro::PostUpdate(float dt)
 {
 	ball->Render();
+
+	for (int k = 0; k < MAX_GOALKEEPERS; k++)
+	{
+		cubeConstFix[k]->Render();
+		cubeConstMobile[k]->Render();
+	}
+
 
 	return UPDATE_CONTINUE;
 }

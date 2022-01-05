@@ -10,6 +10,7 @@
 #define SKY_LIMITS 400
 #define WALL_MASS 0
 #define MAX_WALLS 40
+#define MAX_GOALKEEPERS 5
 
 struct PhysBody3D;
 struct PhysMotor3D;
@@ -41,6 +42,12 @@ public:
 
 	Cube* wall[MAX_WALLS];
 
+	Cube* cubeConstFix[MAX_GOALKEEPERS];
+	Cube* cubeConstMobile[MAX_GOALKEEPERS];
+	PhysBody3D* constFix[MAX_GOALKEEPERS];
+	PhysBody3D* constMobile[MAX_GOALKEEPERS];
+
+
 	Cube* sensor;
 
 	uint goalFX;
@@ -49,6 +56,7 @@ public:
 	Sphere* ball;
 
 	PhysBody3D* b;
+
 
 	PhysBody3D* pb_chassis;
 	Cube p_chassis;

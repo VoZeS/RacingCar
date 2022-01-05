@@ -230,7 +230,7 @@ update_status ModulePlayer::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() > 0 && !minVelAch)
 	{
-		App->audio->PlayFx(breakFX);
+		//App->audio->PlayFx(breakFX);
 		brake = BRAKE_POWER;
 		backwards = true;
 	}
