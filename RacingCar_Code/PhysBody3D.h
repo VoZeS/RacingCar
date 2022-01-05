@@ -3,9 +3,15 @@
 
 #include "p2List.h"
 
+class btQuaternion;
 class btRigidBody;
 class Module;
 class vec3;
+
+struct Euler
+{
+	float roll, pitch, yaw;
+};
 
 // =================================================
 struct PhysBody3D
@@ -19,6 +25,9 @@ public:
 	void GetTransform(float* matrix) const;
 	void SetTransform(const float* matrix) const;
 	void SetPos(float x, float y, float z);
+	void SetRotation(btQuaternion q);
+	Euler GetEulerAngles(btQuaternion q);
+	
 
 	const vec3 GetPos() const;
 

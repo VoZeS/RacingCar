@@ -21,6 +21,8 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void Restart();
+
 	bool cam_follow = true;
 	bool maxVelAch = false;
 	bool minVelAch = false;

@@ -115,7 +115,9 @@ bool ModulePlayer::Start()
 
 	vehicle = App->physics->AddVehicle(car);
 	vehicle->SetPos(0, 0.5f, 0);
-
+	btQuaternion q;
+	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
+	vehicle->SetRotation(q);
 	breakFX = App->audio->LoadFx("Assets/FX/break.wav");
 	hornFX = App->audio->LoadFx("Assets/FX/horn.wav");
 	
@@ -138,7 +140,7 @@ update_status ModulePlayer::Update(float dt)
 		canMove = true;
 	}
 	turn = acceleration = brake = 0.0f;
-	
+
 	//-------------------------------------------------------------------------------------------------------------- FOLLOWING CAMERA
 	if (cam_follow)
 	{
@@ -258,6 +260,44 @@ update_status ModulePlayer::Update(float dt)
 		vehicle->SetPos(0, 0.5, 0);
 	}
 
+	btVector3 airControl;
+	airControl = vehicle->vehicle->getChassisWorldTransform().getOrigin();
+	if (airControl.getY() > 5)
+	{
+		Euler angles = vehicle->GetEulerAngles(vehicle->vehicle->getChassisWorldTransform().getRotation());
+
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		{
+			angles.yaw -= (DEGTORAD * 2);
+			btQuaternion q;
+			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
+			vehicle->SetRotation(q);
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			angles.yaw += (DEGTORAD * 2);
+			btQuaternion q;
+			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
+			vehicle->SetRotation(q);
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		{
+			angles.roll += (DEGTORAD * 1);
+			btQuaternion q;
+			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
+			vehicle->SetRotation(q);
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		{
+			angles.roll -= (DEGTORAD * 1);
+			btQuaternion q;
+			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
+			vehicle->SetRotation(q);
+		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) Restart();
 
 	char title[80];
 	if(!App->scene_intro->is_playing_goal)
@@ -270,5 +310,15 @@ update_status ModulePlayer::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-
+void ModulePlayer::Restart()
+{
+	turn = 0;
+	acceleration = 0;
+	vehicle->SetPos(0, 0.5f, 0);
+	btQuaternion q;
+	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
+	vehicle->SetRotation(q);
+	App->scene_intro->timer = INITIAL_TIME;
+	
+}
 
