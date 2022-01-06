@@ -35,9 +35,16 @@ public:
 	void AddConstraintP2P(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB);
 	btHingeConstraint* AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision = false);
 
+	void Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle);
+
+	double FdAx = 0, FdAy = 0, FdAz = 0; // AERODYNAMIC FORCES (DRAG)
+
+
 private:
 
 	bool debug;
+
+	bool aerodynamicDragEnabled = true;
 
 	btDefaultCollisionConfiguration*	collision_conf;
 	btCollisionDispatcher*				dispatcher;

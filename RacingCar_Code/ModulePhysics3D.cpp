@@ -371,6 +371,43 @@ btHingeConstraint* ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBo
 	return hinge;
 }
 
+void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle)
+{
+	float coeficientD = 0.08, density = 0.01,
+		surfaceX = 0, surfaceY = 0, surfaceZ = 0;
+
+	surfaceX = (info.chassis_size.x * 0.5f) * (info.chassis_size.x * 0.5f);
+	surfaceY = ((info.chassis_size.y + info.cabin_size.y) * 0.5f) * ((info.chassis_size.y + info.cabin_size.y) * 0.5f);
+	surfaceZ = (info.chassis_size.z * 0.5f) * (info.chassis_size.z * 0.5f);
+
+	// DRAG AERODYNAMIC
+	// Sign "-" to define its way
+	/*if (aerodynamicDragEnabled)
+	{
+		if (vehicle.GetKmh() < 0)
+		{
+			FdAx = 0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+		}
+		else
+		{
+			FdAx = -0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+		}
+		if (ball->data->velY < 0)
+		{
+			FdAy = 0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+		}
+		else
+		{
+			FdAy = -0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+		}
+	}
+	else
+	{
+		FdAx = 0;
+		FdAy = 0;
+	}*/
+}
+
 // =============================================
 void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
