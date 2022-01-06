@@ -37,7 +37,7 @@ public:
 
 	void Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle);
 
-	double FdAx = 0, FdAy = 0, FdAz = 0; // AERODYNAMIC FORCES (DRAG)
+	float FdAx = 0, FdAy = 0, FdAz = 0; // AERODYNAMIC FORCES (DRAG)
 
 
 private:

@@ -1,5 +1,6 @@
 #pragma once
 #include "Module.h"
+#include "PhysVehicle3D.h"
 #include "Globals.h"
 #include "p2Point.h"
 
@@ -42,4 +43,6 @@ public:
 	uint hornFX;
 	uint engineOnFX;
 
+private:
+	VehicleInfo car;
 };

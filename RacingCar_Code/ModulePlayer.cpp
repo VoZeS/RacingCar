@@ -20,9 +20,6 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 
-	VehicleInfo car;
-
-
 	// Car properties ----------------------------------------
 	car.chassis_size.Set(2, 0.75f, 4);
 	car.chassis_offset.Set(0, 1, 0);
@@ -143,6 +140,9 @@ update_status ModulePlayer::Update(float dt)
 	}
 	turn = acceleration = brake = 0.0f;
 
+	// UPTADE AERODYNAMIC FORCE
+	App->physics->Aerodynamics(car, *vehicle);
+
 	// PLAYER LIMITS
 	if (vehicle->GetPos().x < -95 || vehicle->GetPos().x > 95 || vehicle->GetPos().z < -95 || vehicle->GetPos().z > 95)
 	{
@@ -253,6 +253,11 @@ update_status ModulePlayer::Update(float dt)
 	vehicle->Turn(turn);
 	vehicle->Brake(brake);
 
+	vehicle->Push(App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
+
+	LOG("X: %.2f, Y: %.2f, Z: %.2f", App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
+
+		
 	vehicle->Render();
 
 	if (App->scene_intro->timer <= 0)

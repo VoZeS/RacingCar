@@ -136,6 +136,14 @@ update_status ModulePhysics3D::Update(float dt)
 		}*/
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	{
+		if (aerodynamicDragEnabled)
+			aerodynamicDragEnabled = false;
+		else
+			aerodynamicDragEnabled = true;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -373,39 +381,68 @@ btHingeConstraint* ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBo
 
 void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle)
 {
-	float coeficientD = 0.08, density = 0.01,
-		surfaceX = 0, surfaceY = 0, surfaceZ = 0;
+	float coeficientD = 0.8, density = 0.4,
+		surface = 0;
 
-	surfaceX = (info.chassis_size.x * 0.5f) * (info.chassis_size.x * 0.5f);
-	surfaceY = ((info.chassis_size.y + info.cabin_size.y) * 0.5f) * ((info.chassis_size.y + info.cabin_size.y) * 0.5f);
-	surfaceZ = (info.chassis_size.z * 0.5f) * (info.chassis_size.z * 0.5f);
+	//FUYM the surface
+	surface = ((info.chassis_size.y + info.cabin_size.y) * 0.5f) * ((info.chassis_size.y + info.cabin_size.y) * 0.5f);
 
 	// DRAG AERODYNAMIC
 	// Sign "-" to define its way
-	/*if (aerodynamicDragEnabled)
+	if (aerodynamicDragEnabled)
 	{
-		if (vehicle.GetKmh() < 0)
+		if (vehicle.GetForwardVector().x >= 0)
 		{
-			FdAx = 0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+			FdAx = -0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
+		}
+		else if (vehicle.GetForwardVector().x < 0)
+		{
+			FdAx = 0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
 		}
 		else
 		{
-			FdAx = -0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+			FdAx = 0;
+
 		}
-		if (ball->data->velY < 0)
+		if (vehicle.GetForwardVector().y >= 0)
 		{
-			FdAy = 0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+			FdAy = 0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
+		}
+		else if (vehicle.GetForwardVector().y < 0)
+		{
+			FdAy = -0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
 		}
 		else
 		{
-			FdAy = -0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+			FdAy = 0;
+
+		}
+		if (vehicle.GetForwardVector().z >= 0)
+		{
+			FdAz = -0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
+		}
+		else if (vehicle.GetForwardVector().z < 0)
+		{
+			FdAz = 0.5 * density * vehicle.GetKmh() * surface * coeficientD;
+
+		}
+		else
+		{
+			FdAz = 0;
+
 		}
 	}
 	else
 	{
 		FdAx = 0;
 		FdAy = 0;
-	}*/
+		FdAz = 0;
+	}
 }
 
 // =============================================
