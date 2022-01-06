@@ -57,10 +57,10 @@ bool ModulePlayer::Start()
 
 	float half_width = car.chassis_size.x*0.5f;
 	float half_length = car.chassis_size.z*0.5f;
-	
+
 	vec3 direction(0,-1,0);
 	vec3 axis(-1,0,0);
-	
+
 	car.num_wheels = 4;
 	car.wheels = new Wheel[4];
 
@@ -117,9 +117,10 @@ bool ModulePlayer::Start()
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
 	vehicle->SetRotation(q);
+	vehicle->body->setUserPointer(vehicle);
 	breakFX = App->audio->LoadFx("Assets/FX/break.wav");
 	hornFX = App->audio->LoadFx("Assets/FX/horn.wav");
-	
+
 	return true;
 }
 
@@ -134,6 +135,10 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update(float dt)
 {
+	forwardVector = vehicle->vehicle->getForwardVector().normalize();
+	vehicle->vehicle->getChassisWorldTransform();
+	perpendicularVector = { -forwardVector.getZ(), forwardVector.getY(), forwardVector.getX() };
+
 	if (INITIAL_TIME - App->scene_intro->timer == 5)
 	{
 		canMove = true;
@@ -183,7 +188,7 @@ update_status ModulePlayer::Update(float dt)
 		else
 			cam_follow = true;
 	}
-	
+
 	//---------------------------------- END FOLLOWING CAMERA
 
 	if (vehicle->GetKmh() >= MAX_VEL)
@@ -220,7 +225,7 @@ update_status ModulePlayer::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		App->audio->PlayFx(hornFX);
-		
+
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
@@ -240,7 +245,7 @@ update_status ModulePlayer::Update(float dt)
 		//App->audio->PlayFx(breakFX);
 		brake = BRAKE_POWER;
 	}
-	
+
 
 	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && vehicle->GetKmh() <= 0 && !minVelAch)
 	{
@@ -257,7 +262,7 @@ update_status ModulePlayer::Update(float dt)
 
 	LOG("X: %.2f, Y: %.2f, Z: %.2f", App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
 
-		
+
 	vehicle->Render();
 
 	if (App->scene_intro->timer <= 0)
@@ -272,44 +277,41 @@ update_status ModulePlayer::Update(float dt)
 
 	btVector3 airControl;
 	airControl = vehicle->vehicle->getChassisWorldTransform().getOrigin();
-	if (airControl.getY() > 5)
+	if (airControl.getY() > 3)
 	{
 		Euler angles = vehicle->GetEulerAngles(vehicle->vehicle->getChassisWorldTransform().getRotation());
 
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		{
-			angles.yaw -= (DEGTORAD * 2);
+			vehicle->body->applyTorque(perpendicularVector * -1500);
+			/*angles.yaw -= (DEGTORAD * 2);
 			btQuaternion q;
 			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->SetRotation(q);*/
 		}
 		else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		{
-			angles.yaw += (DEGTORAD * 2);
+			vehicle->body->applyTorque(perpendicularVector * 2500);
+			/*angles.yaw += (DEGTORAD * 2);
 			btQuaternion q;
 			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->SetRotation(q);*/
 		}
+
 
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
-			angles.roll += (DEGTORAD * 1);
-			btQuaternion q;
-			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->body->applyTorque(forwardVector * -2500);
 		}
 		else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		{
-			angles.roll -= (DEGTORAD * 1);
-			btQuaternion q;
-			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->body->applyTorque(forwardVector * 2500);
 		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) Restart();
 
-	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
 	{
 		float x = 0, y = 0, z = 0;
 		x = vehicle->GetPos().x;
@@ -319,7 +321,7 @@ update_status ModulePlayer::Update(float dt)
 		q.setEuler(btScalar(vehicle->GetForwardVector().x * DEGTORAD), btScalar(0), btScalar(0));
 		vehicle->SetRotation(q);
 	}
-	
+
 
 	char title[80];
 	if (!App->scene_intro->is_playing_goal && !looser)
@@ -373,6 +375,5 @@ void ModulePlayer::Restart()
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
 	vehicle->SetRotation(q);
 	App->scene_intro->timer = INITIAL_TIME;
-	
-}
 
+}

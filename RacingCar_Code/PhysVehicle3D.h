@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PhysBody3D.h"
+
 #include "glmath.h"
 
 class btRaycastVehicle;
@@ -65,7 +66,7 @@ public:
 	vec3 GetForwardVector() const;
 
 public:
-
+	
 	VehicleInfo info;
 	btRaycastVehicle* vehicle;
 };

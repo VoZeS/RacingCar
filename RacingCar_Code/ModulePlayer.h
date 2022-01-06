@@ -38,6 +38,9 @@ public:
 	bool canMove;
 	bool backwards = false;
 
+	btVector3 forwardVector;
+	btVector3 perpendicularVector;
+
 	//FX
 	uint breakFX;
 	uint hornFX;
