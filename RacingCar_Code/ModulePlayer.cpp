@@ -120,6 +120,7 @@ bool ModulePlayer::Start()
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
 	vehicle->SetRotation(q);
+	vehicle->body->setUserPointer(vehicle);
 	breakFX = App->audio->LoadFx("Assets/FX/break.wav");
 	hornFX = App->audio->LoadFx("Assets/FX/horn.wav");
 	
@@ -137,12 +138,17 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update(float dt)
 {
+	forwardVector = vehicle->vehicle->getForwardVector().normalize();
+	vehicle->vehicle->getChassisWorldTransform();
+	perpendicularVector = { -forwardVector.getZ(), forwardVector.getY(), forwardVector.getX() };
+
 	if (INITIAL_TIME - App->scene_intro->timer == 5)
 	{
 		canMove = true;
 	}
 	turn = acceleration = brake = 0.0f;
 
+	
 	// PLAYER LIMITS
 	if (vehicle->GetPos().x < -95 || vehicle->GetPos().x > 95 || vehicle->GetPos().z < -95 || vehicle->GetPos().z > 95)
 	{
@@ -267,38 +273,35 @@ update_status ModulePlayer::Update(float dt)
 
 	btVector3 airControl;
 	airControl = vehicle->vehicle->getChassisWorldTransform().getOrigin();
-	if (airControl.getY() > 5)
+	if (airControl.getY() > 3)
 	{
 		Euler angles = vehicle->GetEulerAngles(vehicle->vehicle->getChassisWorldTransform().getRotation());
 
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		{
-			angles.yaw -= (DEGTORAD * 2);
+			vehicle->body->applyTorque(perpendicularVector * -1500);
+			/*angles.yaw -= (DEGTORAD * 2);
 			btQuaternion q;
 			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->SetRotation(q);*/
 		}
 		else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		{
-			angles.yaw += (DEGTORAD * 2);
+			vehicle->body->applyTorque(perpendicularVector * 2500);
+			/*angles.yaw += (DEGTORAD * 2);
 			btQuaternion q;
 			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->SetRotation(q);*/
 		}
+		
 
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
-			angles.roll += (DEGTORAD * 1);
-			btQuaternion q;
-			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->body->applyTorque(forwardVector * -2500);
 		}
 		else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		{
-			angles.roll -= (DEGTORAD * 1);
-			btQuaternion q;
-			q.setEulerZYX(btScalar(angles.yaw), btScalar(angles.pitch), btScalar(angles.roll));
-			vehicle->SetRotation(q);
+			vehicle->body->applyTorque(forwardVector * 2500);
 		}
 	}
 
