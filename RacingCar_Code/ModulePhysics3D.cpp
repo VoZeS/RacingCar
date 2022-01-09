@@ -444,6 +444,51 @@ void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehic
 		FdAz = 0;
 	}
 }
+void ModulePhysics3D::Hidrodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle, Cube& water)
+{
+	float coeficientDH = 1, density = 1, surface = 0;
+
+	surface = info.wheels->width * water.size.y;
+
+	if (isInWater)
+	{
+		if (vehicle.GetForwardVector().x >= 0)
+		{
+			FdHx = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+		}
+		else if (vehicle.GetForwardVector().x < 0)
+		{
+			FdHx = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+		}
+		else
+		{
+			FdHx = 0;
+
+		}
+
+		if (vehicle.GetForwardVector().z >= 0)
+		{
+			FdHz = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+		}
+		else if (vehicle.GetForwardVector().z < 0)
+		{
+			FdHz = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+		}
+		else
+		{
+			FdHz = 0;
+
+		}
+
+
+	}
+}
+
+
 
 // =============================================
 void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)

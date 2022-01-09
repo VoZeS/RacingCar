@@ -36,8 +36,11 @@ public:
 	btHingeConstraint* AddConstraintHinge(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB, const vec3& axisA, const vec3& axisB, bool disable_collision = false);
 
 	void Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle);
+	void Hidrodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle, Cube& water);
 
 	float FdAx = 0, FdAy = 0, FdAz = 0; // AERODYNAMIC FORCES (DRAG)
+
+	float FdHx = 0, FdHz = 0; //HYDRODYNAMIC FORCES (DRAG)
 
 
 private:
@@ -45,6 +48,7 @@ private:
 	bool debug;
 
 	bool aerodynamicDragEnabled = true;
+	bool isInWater = false;
 
 	btDefaultCollisionConfiguration*	collision_conf;
 	btCollisionDispatcher*				dispatcher;
