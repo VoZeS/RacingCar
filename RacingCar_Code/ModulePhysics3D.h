@@ -28,7 +28,7 @@ public:
 	bool CleanUp();
 
 	PhysBody3D* AddBody(const Sphere& sphere, float mass = 1.0f);
-	PhysBody3D* AddBody(const Cube& cube, Module* listener, float mass = 1.0f, bool sensor = false);
+	PhysBody3D* AddBody(const Cube& cube, Module* listener, float mass = 1.0f, bool sensor = false, bool isWater = false);
 	PhysBody3D* AddBody(const Cylinder& cylinder, float mass = 1.0f);
 	PhysVehicle3D* AddVehicle(const VehicleInfo& info);
 
@@ -48,6 +48,7 @@ private:
 	bool debug;
 
 	bool aerodynamicDragEnabled = true;
+	bool hidrodynamicDragEnabled = true;
 	
 
 	btDefaultCollisionConfiguration*	collision_conf;

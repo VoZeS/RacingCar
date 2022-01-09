@@ -142,6 +142,11 @@ update_status ModulePhysics3D::Update(float dt)
 			aerodynamicDragEnabled = false;
 		else
 			aerodynamicDragEnabled = true;
+
+		if (hidrodynamicDragEnabled)
+			hidrodynamicDragEnabled = false;
+		else
+			hidrodynamicDragEnabled = true;
 	}
 
 	return UPDATE_CONTINUE;
@@ -230,7 +235,7 @@ PhysBody3D* ModulePhysics3D::AddBody(const Sphere& sphere, float mass)
 
 
 // ---------------------------------------------------------
-PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, Module* listener, float mass, bool sensor)
+PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, Module* listener, float mass, bool sensor, bool isWater)
 {
 	btCollisionShape* colShape = new btBoxShape(btVector3(cube.size.x * 0.5f, cube.size.y * 0.5f, cube.size.z * 0.5f));
 	shapes.add(colShape);
@@ -249,11 +254,14 @@ PhysBody3D* ModulePhysics3D::AddBody(const Cube& cube, Module* listener, float m
 	btRigidBody* body = new btRigidBody(rbInfo);
 	PhysBody3D* pbody = new PhysBody3D(body);
 
+	pbody->is_water = isWater;
+
 	pbody->is_sensor = sensor;
 	if (pbody->is_sensor == true)
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	else
 		body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	pbody->collision_listeners.add(listener);
 	body->setUserPointer(pbody);
 	world->addRigidBody(body);
@@ -381,7 +389,7 @@ btHingeConstraint* ModulePhysics3D::AddConstraintHinge(PhysBody3D& bodyA, PhysBo
 
 void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle)
 {
-	float coeficientD = 0.8, density = 0.4,
+	float coeficientD = 0.8, density = 0.3,
 		surface = 0;
 	
 	// FUYM the surface
@@ -448,45 +456,58 @@ void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehic
 }
 void ModulePhysics3D::Hidrodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle, Cube& water)
 {
-	float coeficientDH = 50, density = 1, surface = 0;
+	float coeficientDH = 10, density = 1, surface = 0;
 
 	surface = info.wheels->width * water.size.y;
 
-	if (isInWater)
+	if (hidrodynamicDragEnabled)
 	{
-		if (vehicle.GetForwardVector().x >= 0)
+		if (isInWater)
 		{
-			FdHx = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+			if (vehicle.GetForwardVector().x >= 0)
+			{
+				FdHx = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
 
-		}
-		else if (vehicle.GetForwardVector().x < 0)
-		{
-			FdHx = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+			}
+			else if (vehicle.GetForwardVector().x < 0)
+			{
+				FdHx = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+			}
+			else
+			{
+				FdHx = 0;
+
+			}
+
+			if (vehicle.GetForwardVector().z >= 0)
+			{
+				FdHz = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+			}
+			else if (vehicle.GetForwardVector().z < 0)
+			{
+				FdHz = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
+
+			}
+			else
+			{
+				FdHz = 0;
+
+			}
+
 
 		}
 		else
 		{
 			FdHx = 0;
-
-		}
-
-		if (vehicle.GetForwardVector().z >= 0)
-		{
-			FdHz = -0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
-
-		}
-		else if (vehicle.GetForwardVector().z < 0)
-		{
-			FdHz = 0.5 * density * vehicle.GetKmh() * surface * coeficientDH;
-
-		}
-		else
-		{
 			FdHz = 0;
-
 		}
-
-
+	}
+	else
+	{
+		FdHx = 0;
+		FdHz = 0;
 	}
 }
 

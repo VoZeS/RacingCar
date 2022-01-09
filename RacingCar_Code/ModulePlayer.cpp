@@ -114,6 +114,9 @@ bool ModulePlayer::Start()
 
 	vehicle = App->physics->AddVehicle(car);
 	vehicle->is_vehicle = true;
+	vehicle->is_ball = false;
+	vehicle->is_water = false;
+	vehicle->is_sensor = false;
 	vehicle->SetPos(0, 0.5f, 0);
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
@@ -150,11 +153,11 @@ update_status ModulePlayer::Update(float dt)
 	App->physics->Aerodynamics(car, *vehicle);
 
 	//UPDATE HYDRODYNAMIC FORCE
-	for (int a = 0; a++; a < 2)
-	{
-		App->physics->Hidrodynamics(car, *vehicle, *App->scene_intro->water[a]);
-	}
 	
+	App->physics->Hidrodynamics(car, *vehicle, *App->scene_intro->water[0]);
+	App->physics->Hidrodynamics(car, *vehicle, *App->scene_intro->water[1]);
+	
+	LOG("%d", App->physics->isInWater);
 
 	// PLAYER LIMITS
 	if (vehicle->GetPos().x < -95 || vehicle->GetPos().x > 95 || vehicle->GetPos().z < -95 || vehicle->GetPos().z > 95)
@@ -269,8 +272,7 @@ update_status ModulePlayer::Update(float dt)
 	vehicle->Push(App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
 	vehicle->Push(App->physics->FdHx, 0, App->physics->FdHz);
 
-	LOG("X: %.2f, Y: %.2f, Z: %.2f", App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
-
+	//LOG("X: %.2f, Y: %.2f, Z: %.2f", App->physics->FdHx, App->physics->FdAy, App->physics->FdHz);
 
 	vehicle->Render();
 
@@ -335,7 +337,16 @@ update_status ModulePlayer::Update(float dt)
 	char title[80];
 	if (!App->scene_intro->is_playing_goal && !looser)
 	{
-		sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
+		if (vehicle->GetKmh() < 0.5 && vehicle->GetKmh() > -0.5)
+		{
+			sprintf_s(title, "0 Km/h --- Time Left %d s", App->scene_intro->timer);
+
+		}
+		else
+		{
+			sprintf_s(title, "%.1f Km/h --- Time Left %d s", vehicle->GetKmh(), App->scene_intro->timer);
+
+		}
 
 	}
 	else if (App->scene_intro->is_playing_goal && !looser)

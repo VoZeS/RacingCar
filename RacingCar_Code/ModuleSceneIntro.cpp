@@ -325,18 +325,14 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	cubeConstMobile[4]->axis = false;
 	cubeConstMobile[4]->color = Blue;
 
-	water[0] = new Cube(14, 0.5, 30);
-	water[0]->SetPos(80, 0.6, -30);
-	water[0]->axis = false;
+	water[0] = new Cube(20, 1, 14);
+	water[0]->SetPos(50, 0, -80);
 	water[0]->color = LightBlue;
 	
 
-	water[1] = new Cube(14, 0.5, 30);
-	water[1]->SetPos(-80, 0.6, -20);
-	water[1]->axis = false;
+	water[1] = new Cube(14, 1, 30);
+	water[1]->SetPos(-80, 0, -20);
 	water[1]->color = LightBlue;
-	
-
 
 }
 
@@ -373,18 +369,17 @@ bool ModuleSceneIntro::Start()
 	{
 		constFix[k] = App->physics->AddBody(*cubeConstFix[k], this, 0.0f, false);
 		constFix[k]->is_ball = false;
+		constFix[k]->is_vehicle = false;
 		constMobile[k] = App->physics->AddBody(*cubeConstMobile[k], this, 100.0f, false);
 		constMobile[k]->is_ball = false;
+		constMobile[k]->is_vehicle = false;
 		hinge[k] = App->physics->AddConstraintHinge(*constFix[k], *constMobile[k], { 0,0,0 }, { 0,3,0 }, { 1,0,0 }, { 1,0,0 });
 
 	}
 
-	for (int a = 0; a < 2; a++)
-	{
-		waterbody[a] = App->physics->AddBody(*water[a], this, 0.2f, true);
-		waterbody[a]->is_water = true;
-		
-	}
+
+	App->physics->AddBody(*water[0], this, 0.0f, true, true)->SetPos(50, 2, -80);
+	App->physics->AddBody(*water[1], this, 0.0f, true, true)->SetPos(-80, 2, -20);
 
 	return ret;
 }
@@ -498,6 +493,10 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 	if (body1->is_water && body2->is_vehicle)
 	{
 		App->physics->isInWater = true;
-		LOG("IS WATER");
+	}
+	else
+	{
+		App->physics->isInWater = false;
+
 	}
 }
