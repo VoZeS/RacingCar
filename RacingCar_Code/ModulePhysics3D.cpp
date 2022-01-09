@@ -383,8 +383,10 @@ void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehic
 {
 	float coeficientD = 0.8, density = 0.4,
 		surface = 0;
-
-	//FUYM the surface
+	
+	// FUYM the surface
+	// The surface will always be this rectangle (front of the car)
+	// This works perfectly :)
 	surface = ((info.chassis_size.y + info.cabin_size.y) * 0.5f) * ((info.chassis_size.y + info.cabin_size.y) * 0.5f);
 
 	// DRAG AERODYNAMIC
