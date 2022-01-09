@@ -116,7 +116,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 
 	//RAMP 2
 	wall[15] = new Cube(10, 1, 20);
-	wall[15]->SetPos(-20, 0, 0);
+	wall[15]->SetPos(-60, 0, 0);
 	wall[15]->SetRotation(20.0f, { -1, 0, 0 });
 	wall[15]->axis = false;
 	wall[15]->color = Green;
@@ -193,7 +193,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	wall[28]->color = Red;
 
 	wall[29] = new Cube(42, 10, 1);
-	wall[29]->SetPos(-48, 10, 10);
+	wall[29]->SetPos(-32, 10, 10);
 	wall[29]->axis = false;
 	wall[29]->color = Red;
 
@@ -324,6 +324,16 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	cubeConstMobile[4]->SetRotation(90, { 0,0,1 });
 	cubeConstMobile[4]->axis = false;
 	cubeConstMobile[4]->color = Blue;
+
+	water[0] = new Cube(14, 0.5, 30);
+	water[0]->SetPos(80, 0.5, -30);
+	water[0]->axis = false;
+	water[0]->color = LightBlue;
+
+	water[1] = new Cube(14, 0.5, 30);
+	water[1]->SetPos(-80, 0.5, -20);
+	water[1]->axis = false;
+	water[1]->color = LightBlue;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -362,6 +372,12 @@ bool ModuleSceneIntro::Start()
 		constMobile[k] = App->physics->AddBody(*cubeConstMobile[k], this, 100.0f, false);
 		constMobile[k]->is_ball = false;
 		hinge[k] = App->physics->AddConstraintHinge(*constFix[k], *constMobile[k], { 0,0,0 }, { 0,3,0 }, { 1,0,0 }, { 1,0,0 });
+
+	}
+
+	for (int a = 0; a < 2; a++)
+	{
+		App->physics->AddBody(*water[a], this, 0.2f, true);
 
 	}
 
@@ -404,6 +420,12 @@ update_status ModuleSceneIntro::Update(float dt)
 	for (int i = 0; i < MAX_WALLS; i++)
 	{
 		wall[i]->Render();
+	}
+
+	for (int a = 0; a < 2; a++)
+	{
+		water[a]->Render();
+
 	}
 
 	ball->SetPos(b->GetPos().x, b->GetPos().y, b->GetPos().z);

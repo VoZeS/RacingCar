@@ -46,6 +46,8 @@ public:
 
 	Cube* wall[MAX_WALLS];
 
+	Cube* water[2];
+
 	Cube* cubeConstFix[MAX_GOALKEEPERS];
 	Cube* cubeConstMobile[MAX_GOALKEEPERS];
 	PhysBody3D* constFix[MAX_GOALKEEPERS];
