@@ -326,14 +326,18 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	cubeConstMobile[4]->color = Blue;
 
 	water[0] = new Cube(14, 0.5, 30);
-	water[0]->SetPos(80, 0.5, -30);
+	water[0]->SetPos(80, 0.6, -30);
 	water[0]->axis = false;
 	water[0]->color = LightBlue;
+	
 
 	water[1] = new Cube(14, 0.5, 30);
-	water[1]->SetPos(-80, 0.5, -20);
+	water[1]->SetPos(-80, 0.6, -20);
 	water[1]->axis = false;
 	water[1]->color = LightBlue;
+	
+
+
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -377,8 +381,9 @@ bool ModuleSceneIntro::Start()
 
 	for (int a = 0; a < 2; a++)
 	{
-		App->physics->AddBody(*water[a], this, 0.2f, true);
-
+		waterbody[a] = App->physics->AddBody(*water[a], this, 0.2f, true);
+		waterbody[a]->is_water = true;
+		
 	}
 
 	return ret;
@@ -489,5 +494,10 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 			is_playing_goal = true;
 		}
 
+	}
+	if (body1->is_water && body2->is_vehicle)
+	{
+		App->physics->isInWater = true;
+		LOG("IS WATER");
 	}
 }

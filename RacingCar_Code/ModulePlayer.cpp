@@ -113,6 +113,7 @@ bool ModulePlayer::Start()
 	car.wheels[3].steering = false;
 
 	vehicle = App->physics->AddVehicle(car);
+	vehicle->is_vehicle = true;
 	vehicle->SetPos(0, 0.5f, 0);
 	btQuaternion q;
 	q.setEuler(btScalar(0 * DEGTORAD), btScalar(0), btScalar(0));
@@ -147,6 +148,13 @@ update_status ModulePlayer::Update(float dt)
 
 	// UPTADE AERODYNAMIC FORCE
 	App->physics->Aerodynamics(car, *vehicle);
+
+	//UPDATE HYDRODYNAMIC FORCE
+	for (int a = 0; a++; a < 2)
+	{
+		App->physics->Hidrodynamics(car, *vehicle, *App->scene_intro->water[a]);
+	}
+	
 
 	// PLAYER LIMITS
 	if (vehicle->GetPos().x < -95 || vehicle->GetPos().x > 95 || vehicle->GetPos().z < -95 || vehicle->GetPos().z > 95)
@@ -259,6 +267,7 @@ update_status ModulePlayer::Update(float dt)
 	vehicle->Brake(brake);
 
 	vehicle->Push(App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
+	vehicle->Push(App->physics->FdHx, 0, App->physics->FdHz);
 
 	LOG("X: %.2f, Y: %.2f, Z: %.2f", App->physics->FdAx, App->physics->FdAy, App->physics->FdAz);
 

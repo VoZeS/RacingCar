@@ -448,7 +448,7 @@ void ModulePhysics3D::Aerodynamics(const VehicleInfo& info, PhysVehicle3D& vehic
 }
 void ModulePhysics3D::Hidrodynamics(const VehicleInfo& info, PhysVehicle3D& vehicle, Cube& water)
 {
-	float coeficientDH = 1, density = 1, surface = 0;
+	float coeficientDH = 50, density = 1, surface = 0;
 
 	surface = info.wheels->width * water.size.y;
 

@@ -48,6 +48,8 @@ public:
 
 	Cube* water[2];
 
+	PhysBody3D* waterbody[2];
+
 	Cube* cubeConstFix[MAX_GOALKEEPERS];
 	Cube* cubeConstMobile[MAX_GOALKEEPERS];
 	PhysBody3D* constFix[MAX_GOALKEEPERS];

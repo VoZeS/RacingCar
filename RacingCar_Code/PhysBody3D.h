@@ -38,6 +38,8 @@ public:
 	p2List<Module*> collision_listeners;
 	bool is_sensor;
 	bool is_ball;
+	bool is_water;
+	bool is_vehicle;
 	btRigidBody* body = nullptr;
 };
 

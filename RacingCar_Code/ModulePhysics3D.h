@@ -41,14 +41,14 @@ public:
 	float FdAx = 0, FdAy = 0, FdAz = 0; // AERODYNAMIC FORCES (DRAG)
 
 	float FdHx = 0, FdHz = 0; //HYDRODYNAMIC FORCES (DRAG)
-
+	bool isInWater = false;
 
 private:
 
 	bool debug;
 
 	bool aerodynamicDragEnabled = true;
-	bool isInWater = false;
+	
 
 	btDefaultCollisionConfiguration*	collision_conf;
 	btCollisionDispatcher*				dispatcher;
