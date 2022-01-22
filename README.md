@@ -14,8 +14,8 @@ This game has a counter, you must finish the obstacle course and score in less t
 
 * WASD: Move the camera
 * Arrows: Move the car
-* G: Overturning the car
 * Spacebar: Horn
+* G: Overturning the car
 * T: Move the camera up
 * F: Move the camera down
 * R: Restart
